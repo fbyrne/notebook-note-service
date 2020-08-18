@@ -3,12 +3,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh './mvnw -DskipTests package'
+                sh './mvnw --batch-mode -DskipTests package'
             }
         }
         stage('Test') {
             steps {
-                sh './mvnw test'
+                sh './mvnw --batch-mode test'
             }
         }
     }
