@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: note-service-deployment
+  labels:
+    app: note-service
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: note-service
+  template:
+    metadata:
+      labels:
+        app: note-service
+    spec:
+      containers:
+        - name: note-service
+          image: notebook/note-service
+          ports:
+            - containerPort: 8080
