@@ -1,0 +1,10 @@
+apiVersion: skaffold/v2beta6
+kind: Config
+metadata:
+  name: note-service
+build:
+  local: {}
+deploy:
+  kubectl:
+    manifests:
+    - note-service.yaml

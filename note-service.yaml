@@ -47,18 +47,6 @@ spec:
             claimName: mongo-pvc
 ---
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: note-service-config
-  namespace: default
-data:
-  spring.data.mongodb.host: mongo
-  spring.data.mongodb.port: 27017
-  spring.data.mongodb.database: note
-  spring.data.mongodb.username: user
-  spring.data.mongodb.password: secret
----
-apiVersion: v1
 kind: Service
 metadata:
   name: note-service
@@ -72,6 +60,15 @@ spec:
     - name: api
       port: 80
       targetPort: 8080
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: note-service-application-properties
+data:
+  spring.data.mongodb.host: mongo
+  spring.data.mongodb.port: "27017"
+  spring.data.mongodb.database: note
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -93,8 +90,16 @@ spec:
       containers:
         - name: note-service
           image: gcr.io/notebook-286811/note-service@sha256:c193ab0895eb08f2d3ee6fe073616ca95ba2459af4a28f2c2ce48f06a70c8da3
-          envFrom:
-            - configMapRef:
-                name: note-service-config
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: application-mongo-config
+              mountPath: "/config"
+              readOnly: true
+      volumes:
+        - name: application-mongo-config
+          configMap:
+            name: note-service-application-properties
+            items:
+              - key: application.properties
+                path: application.properties
