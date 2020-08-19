@@ -1,0 +1,8 @@
+steps:
+  - name: 'maven'
+    entrypoint: 'mvn'
+    args: ['--batch-mode', 'install']
+  - name: gcr.io/$PROJECT_ID/pack
+    args: ["build", "gcr.io/$PROJECT_ID/note-service:$SHORT_SHA", "--builder", "gcr.io/buildpacks/builder:v1"]
+  - name: 'docker'
+    args: ['push', "gcr.io/$PROJECT_ID/note-service:$SHORT_SHA"]
