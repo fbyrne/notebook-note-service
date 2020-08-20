@@ -27,6 +27,16 @@ public class NotebookHandler {
         }).orElse(ServerResponse.ok().build());
     }
 
+    public Mono<ServerResponse> getNote(ServerRequest request) {
+        String noteId = request.pathVariable("id");
+        return repository.findById(noteId)
+                .flatMap(savedNote -> ServerResponse
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(savedNote))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
     public Mono<ServerResponse> createNote(ServerRequest request) {
         Mono<Note> noteToSave = request.bodyToMono(Note.class);
         return noteToSave

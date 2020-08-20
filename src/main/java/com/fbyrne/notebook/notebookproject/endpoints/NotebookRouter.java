@@ -18,6 +18,7 @@ public class NotebookRouter {
     public RouterFunction<ServerResponse> route(NotebookHandler noteHandler) {
         return RouterFunctions
                 .route(GET("/note").and(queryParam("owner", Objects::nonNull)), noteHandler::listNotes)
+                .andRoute(GET("/note/{id}"),noteHandler::getNote)
                 .andRoute(POST("/note").and(accept(MediaType.APPLICATION_JSON)),noteHandler::createNote)
                 .andRoute(PUT("/note/{id}").and(accept(MediaType.APPLICATION_JSON)),noteHandler::updateNote)
                 .andRoute(DELETE("/note/{id}"),noteHandler::deleteNote);
