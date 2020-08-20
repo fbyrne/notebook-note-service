@@ -12,10 +12,10 @@
 *.BASE.*
 *.LOCAL.*
 *.REMOTE.*
-*_BACKUP_*.txt
-*_BASE_*.txt
-*_LOCAL_*.txt
-*_REMOTE_*.txt
+*_BACKUP_*.*
+*_BASE_*.*
+*_LOCAL_*.*
+*_REMOTE_*.*
 
 ### Java ###
 # Compiled class file
