@@ -3,8 +3,7 @@ kind: Config
 metadata:
   name: note-service
 build:
-  local: {}
-deploy:
-  kubectl:
-    manifests:
-    - note-service.yaml
+  artifacts:
+    - image: notebook/note-service
+      buildpacks:
+        builder: "gcr.io/buildpacks/builder:v1"
