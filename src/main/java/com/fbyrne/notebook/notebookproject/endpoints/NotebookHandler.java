@@ -27,13 +27,14 @@ public class NotebookHandler {
         }).orElse(ServerResponse.ok().build());
     }
 
-    public Mono<ServerResponse> getNotes(ServerRequest request) {
-        return request.queryParam("owner")
-                .map(owner -> {
-                    Flux<Note> notes = this.repository.findByOwner(Mono.just(owner));
-                    return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                            .body(notes, Note.class);
-                }).orElse(ServerResponse.ok().build());
+    public Mono<ServerResponse> getNote(ServerRequest request) {
+        String noteId = request.pathVariable("id");
+        return repository.findById(noteId)
+                .flatMap(savedNote -> ServerResponse
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(savedNote))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> createNote(ServerRequest request) {
