@@ -28,12 +28,17 @@ class NotebookApplicationTests {
     @Test
     void test_create_and_retrieve_note() {
         Note note = newNote("My First Note!");
-        webTestClient.post()
+        Note savedNote = webTestClient.post()
                 .uri("/note")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(note))
                 .exchange()
-                .expectStatus().isCreated();
+                .expectStatus().isCreated().returnResult(Note.class).getResponseBody().blockFirst();
+
+        webTestClient.get().uri("/note/{id}", savedNote.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Note.class);
 
     }
 
