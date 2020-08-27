@@ -3,7 +3,24 @@ kind: Config
 metadata:
   name: note-service
 build:
+  tagPolicy:
+    # Use latest for development
+    sha256: { }
   artifacts:
     - image: notebook/note-service
       buildpacks:
         builder: "gcr.io/buildpacks/builder:v1"
+
+profiles:
+  - name: production
+    build:
+      tagPolicy:
+        gitCommit:
+          prefix: production
+          variant: Tags
+  - name: staging
+    build:
+      tagPolicy:
+        gitCommit:
+          prefix: staging
+          variant: Tags

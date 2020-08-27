@@ -91,6 +91,7 @@ $ ./mvnw spring-boot:run
 Create a new note using curl
 ```shell script
 $ curl -X POST --url http://localhost:8080/note \
+   --header 'Authorization: Bearer <jwt-token>' \
    --header 'Content-Type: application/json'  \
    --data-raw '{
            "content": "My First Note"
@@ -101,7 +102,7 @@ The result should be a `JSON` document describing the new note:
 ```json
 {
   "id":"5f3ea2a82855e00a0dd21fcf",
-  "owner":"12342421",
+  "owner":"fergus",
   "created":"2020-08-20T16:19:52.251271Z",
   "modified":"2020-08-20T16:19:52.251271Z",
   "content":"My First Note"
@@ -111,3 +112,10 @@ The result should be a `JSON` document describing the new note:
 ## Deployment
 
 See [notebook-deployment.git](https://github.com/fbyrne/notebook-deployment) for notes on deployment to a kubernetes cluster.
+
+## Dev lifecycle on minikube
+
+```
+$ eval $(minikube docker-env)
+$ skaffold build && kubectl -n notebook-dev rollout restart deployment notes
+```

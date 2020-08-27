@@ -35,8 +35,8 @@ public class NotebookController {
         return this.repository.findByOwner(Mono.just(user));
     }
 
-    @GetMapping("/note/{id}")
-    public Mono<Note> getNote(@PathVariable("id") String noteId, @AuthenticationPrincipal Jwt jwt) {
+    @GetMapping("/note/{noteId}")
+    public Mono<Note> getNote(@PathVariable String noteId, @AuthenticationPrincipal Jwt jwt) {
         return repository.findById(noteId);
     }
 
@@ -61,7 +61,7 @@ public class NotebookController {
         return jwt.getClaimAsString(USER_JWT_CLAIM);
     }
 
-    @PutMapping("/note/{id}")
+    @PutMapping("/note/{noteId}")
     public Mono<Note> updateNote(@PathVariable String noteId, @RequestBody Mono<Note> noteToSave, @AuthenticationPrincipal Jwt jwt) {
         return repository.findById(noteId)
                 .zipWith(noteToSave, (existingNote, updateNote) -> {
@@ -73,7 +73,7 @@ public class NotebookController {
                         new NoteUpdatedEvent(usernameFromJwt(jwt), emailFromJwt(jwt), note)));
     }
 
-    @DeleteMapping("/note/{id}")
+    @DeleteMapping("/note/{noteId}")
     public Mono<Void> deleteNote(@PathVariable String noteId, @AuthenticationPrincipal Jwt jwt) {
         return this.repository.findById(noteId)
                 .flatMap(note ->
