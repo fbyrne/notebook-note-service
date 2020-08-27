@@ -73,7 +73,7 @@ It uses the following thirdparty components:
 | `GET`  | `/note/{id}` | - | Get an existing note |
 | `PUT`  | `/note/{id}` | application/json | Update an existing note |
 | `DELETE` | `/note/{id}` | - | Delete an existing note |
-| `GET`  | `/note?owner={owner}` | - | Get all notes for an owner |
+| `GET`  | `/note` | - | Get all notes for the authenticated user. |
 
 ## Running the application locally
 
@@ -93,7 +93,6 @@ Create a new note using curl
 $ curl -X POST --url http://localhost:8080/note \
    --header 'Content-Type: application/json'  \
    --data-raw '{
-           "owner": "12342421",
            "content": "My First Note"
        }'
 ```
