@@ -66,7 +66,7 @@ class NotebookApplicationTests {
     }
 
     @Test
-    void test_health_endpoint(){
+    void test_health_probe(){
         webTestClient.get()
                 .uri("/actuator/health")
                 .exchange()
@@ -74,5 +74,26 @@ class NotebookApplicationTests {
                 .expectBody(String.class)
                 .value(log::info);
     }
+
+    @Test
+    void test_readiness_probe(){
+        webTestClient.get()
+                .uri("/actuator/health/readiness")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .value(log::info);
+    }
+
+    @Test
+    void test_liveness_probe(){
+        webTestClient.get()
+                .uri("/actuator/health/liveness")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .value(log::info);
+    }
+
 
 }
