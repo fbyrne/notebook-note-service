@@ -30,7 +30,9 @@ public class OAuthSecurityConfiguration {
                         .jwt(withDefaults())
         );
 
-        http.authorizeExchange().anyExchange().authenticated();
+        http.authorizeExchange()
+                .pathMatchers("/actuator/**").permitAll()
+                .anyExchange().authenticated();
 
         return http.build();
     }

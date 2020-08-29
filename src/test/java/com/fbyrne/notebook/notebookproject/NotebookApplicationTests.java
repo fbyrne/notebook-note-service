@@ -2,9 +2,11 @@ package com.fbyrne.notebook.notebookproject;
 
 import com.fbyrne.notebook.notebookproject.model.Note;
 import com.github.fridujo.rabbitmq.mock.MockConnectionFactory;
+import lombok.extern.apachecommons.CommonsLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +43,14 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
                 "spring.main.web-application-type=reactive"
         })
 @ContextConfiguration(classes = NotebookApplicationTests.TestDependencyConfiguration.class)
+@CommonsLog
 class NotebookApplicationTests {
+
+    @Autowired
+    private WebTestClient webTestClient;
+
+    @MockBean
+    private ReactiveJwtDecoder reactiveJwtDecoder;
 
     @TestConfiguration
     static class TestDependencyConfiguration {
@@ -54,6 +63,16 @@ class NotebookApplicationTests {
     @Test
     void contextLoads(){
 
+    }
+
+    @Test
+    void test_health_endpoint(){
+        webTestClient.get()
+                .uri("/actuator/health")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .value(log::info);
     }
 
 }
