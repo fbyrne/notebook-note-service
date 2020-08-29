@@ -86,9 +86,6 @@ public class NotebookController {
                     if(existingNote.getVersion() != updateNote.getVersion()){
                         throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED, "trying to update from an outdated version");
                     }
-                    return existingNote;
-                })
-                .zipWith(noteToSave, (existingNote, updateNote) -> {
                     existingNote.setContent(updateNote.getContent());
                     return existingNote;
                 })

@@ -115,7 +115,7 @@ See [notebook-deployment.git](https://github.com/fbyrne/notebook-deployment) for
 
 ## Dev lifecycle on minikube
 
-```
+```shell script
 $ eval $(minikube docker-env)
 $ skaffold build && kubectl -n notebook-dev rollout restart deployment notes
 ```
