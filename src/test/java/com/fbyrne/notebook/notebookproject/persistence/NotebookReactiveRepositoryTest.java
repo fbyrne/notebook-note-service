@@ -49,8 +49,33 @@ class NotebookReactiveRepositoryTest {
                 .assertNext(note -> {
                     assertNotNull(note.getId());
                     assertEquals(ownerId, note.getOwner());
+                    assertEquals(1, note.getVersion());
                     assertNotNull(note.getCreated());
-                    assertNotNull(note.getContent());
+                    assertEquals(noteContent, note.getContent());
+                })
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    void test_as_a_user_I_can_update_a_note() {
+        String ownerId = UUID.randomUUID().toString();
+        String noteContent = "My note";
+        Note note1 = new Note(noteContent);
+        note1.setOwner(ownerId);
+        repository.save(note1).block();
+        note1.setContent("updated");
+
+        Mono<Note> updatedNote = repository.save(note1);
+
+        StepVerifier
+                .create(updatedNote)
+                .assertNext(note -> {
+                    assertNotNull(note.getId());
+                    assertEquals(ownerId, note.getOwner());
+                    assertEquals(2, note.getVersion());
+                    assertNotNull(note.getCreated());
+                    assertEquals("updated", note.getContent());
                 })
                 .expectComplete()
                 .verify();

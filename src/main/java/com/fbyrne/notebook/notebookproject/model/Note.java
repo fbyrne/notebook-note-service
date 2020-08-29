@@ -1,10 +1,7 @@
 package com.fbyrne.notebook.notebookproject.model;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -19,6 +16,9 @@ public class Note {
     @Id
     @EqualsAndHashCode.Include
     private String id;
+
+    @Version
+    private long version;
 
     @CreatedBy
     private String owner;
