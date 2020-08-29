@@ -11,7 +11,7 @@ import org.springframework.security.web.server.savedrequest.NoOpServerRequestCac
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@Profile("!test")
+//@Profile("!test")
 public class OAuthSecurityConfiguration {
 
     @Bean

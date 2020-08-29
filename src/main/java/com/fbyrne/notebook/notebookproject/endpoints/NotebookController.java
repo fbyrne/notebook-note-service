@@ -39,7 +39,8 @@ public class NotebookController {
 
     @GetMapping("/note/{noteId}")
     public Mono<Note> getNote(@PathVariable String noteId, @AuthenticationPrincipal Jwt jwt) {
-        return repository.findById(noteId);
+        return repository.findById(noteId)
+                .switchIfEmpty(Mono.error(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
     }
 
     @PostMapping("/note")
