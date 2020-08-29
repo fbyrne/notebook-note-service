@@ -7,12 +7,15 @@ import com.fbyrne.notebook.notebookproject.model.Note;
 import com.fbyrne.notebook.notebookproject.persistence.NotebookReactiveRepository;
 import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -42,15 +45,19 @@ public class NotebookController {
 
     @PostMapping("/note")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<Note> createNote(@RequestBody Mono<Note> noteToSave, @AuthenticationPrincipal Jwt jwt, ServerHttpResponse response) {
+    public Mono<Note> createNote(@RequestBody Mono<Note> noteToSave, @AuthenticationPrincipal Jwt jwt, ServerHttpRequest request, ServerHttpResponse response) {
         return noteToSave.map(n -> {
-                n.setOwner(usernameFromJwt(jwt));
-                return n;
-            })
-                .flatMap(this.repository::save)
-                .doOnSuccess(note -> this.publisher.publishEvent(
-                        new NoteCreatedEvent(usernameFromJwt(jwt),emailFromJwt(jwt), note))
-                );
+            n.setOwner(usernameFromJwt(jwt));
+            return n;
+        })
+        .flatMap(this.repository::save)
+        .map(note -> {
+            response.getHeaders().add(HttpHeaders.LOCATION, "/note/" + note.getId());
+            return note;
+        })
+        .doOnSuccess(note -> this.publisher.publishEvent(
+                new NoteCreatedEvent(usernameFromJwt(jwt), emailFromJwt(jwt), note))
+        );
     }
 
     private String emailFromJwt(@AuthenticationPrincipal Jwt jwt) {
@@ -78,8 +85,8 @@ public class NotebookController {
         return this.repository.findById(noteId)
                 .flatMap(note ->
                         this.repository.deleteById(noteId)
-                            .doOnSuccess(v -> this.publisher.publishEvent(
-                                    new NoteDeletedEvent(usernameFromJwt(jwt), emailFromJwt(jwt), note))));
+                                .doOnSuccess(v -> this.publisher.publishEvent(
+                                        new NoteDeletedEvent(usernameFromJwt(jwt), emailFromJwt(jwt), note))));
 
     }
 }
