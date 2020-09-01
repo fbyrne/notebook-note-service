@@ -15,12 +15,8 @@ profiles:
   - name: production
     build:
       tagPolicy:
-        gitCommit:
-          prefix: production-
-          variant: Tags
+        gitCommit: {}
   - name: staging
     build:
       tagPolicy:
-        gitCommit:
-          prefix: staging-
-          variant: Tags
+        gitCommit: {}
